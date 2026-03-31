@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Para ti, Keyri</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,500&family=Sacramento&family=Jost:wght@200;300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      /* PALETA DE COLORES "ATARDECER CÓSMICO" (MANTENIDA) */
+      --bg:      #0b071a; 
+      --p1:      #3e1f47; 
+      --p2:      #a65c71; 
+      --glow:    #e8a08a; 
+      --accent:  #ffd4c2; 
+      --text:    #fff0ea; 
+      --sub:     #e0b0a8; 
+      --dim:     #a08a86; 
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── FONDO PROFUNDO TEMÁTICO ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%,  #251230 0%, transparent 70%),
+        radial-gradient(ellipse 70% 80% at 90% 90%, #613540 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 50% 50%, #1a0f26 0%, transparent 100%);
+      animation: breathe 10s ease-in-out infinite alternate;
+    }
+    @keyframes breathe {
+      from { filter: brightness(0.8); }
+      to   { filter: brightness(1.1); }
+    }
+
+    /* ── SISTEMA DE ESTRELLAS TEMÁTICO ── */
+    .stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        radial-gradient(1.3px 1.3px at 15% 25%, #ffd4c2, transparent),
+        radial-gradient(1.1px 1.1px at 85% 10%, #e8a08a, transparent),
+        radial-gradient(1.6px 1.6px at 45% 80%, #fff0ea, transparent),
+        radial-gradient(1.1px 1.1px at 65% 55%, #f8d8a0, transparent),
+        radial-gradient(1px   1px   at 10% 70%, #e8a08a, transparent),
+        radial-gradient(1px   1px   at 95% 40%, #ffd4c2, transparent),
+        radial-gradient(2.1px 2.1px at 30% 15%, #fff0ea, transparent),
+        radial-gradient(1.1px 1.1px at 60% 95%, #e0b0a8, transparent),
+        radial-gradient(1.1px 1.1px at 55% 30%, #f8d8a0, transparent),
+        radial-gradient(1.6px 1.6px at 25% 50%, #ffd4c2, transparent);
+      animation: twinkle 8s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.4; }
+      to   { opacity: 0.9; }
+    }
+
+    canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .hearts { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .heart  {
+      position: absolute; bottom: -50px; opacity: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(-10deg) scale(1.1);   opacity: 0;   }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.2; }
+      100% { transform: translateY(-110vh) rotate(10deg) scale(0.4); opacity: 0; }
+    }
+
+    /* ── CONTENIDO PRINCIPAL ── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 72px 28px 100px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      opacity: 0;
+      animation: fadeUp 1.3s cubic-bezier(.22,1,.36,1) .3s forwards;
+    }
+    header .eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-family: 'Sacramento', cursive;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      color: var(--accent);
+      line-height: 1.1;
+      text-shadow: 0 0 30px rgba(232,160,138,.6), 0 0 60px rgba(232,160,138,.2);
+    }
+    header .line {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-top: 20px;
+      color: var(--p2);
+    }
+    header .line::before, header .line::after {
+      content: ''; display: block; width: 70px; height: 1px;
+    }
+    header .line::before { background: linear-gradient(90deg, transparent, var(--p2)); }
+    header .line::after  { background: linear-gradient(90deg, var(--p2), transparent); }
+    header .line span { color: var(--glow); font-size: 1rem; }
+
+    .card {
+      background: linear-gradient(145deg,
+        rgba(62,31,71,.35) 0%, 
+        rgba(15,10,30,.5) 55%,  
+        rgba(100,60,70,.2) 100%);
+      border: 1px solid rgba(232,160,138,.15);
+      border-radius: 22px;
+      padding: 50px 46px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 50px rgba(232,160,138,.05), inset 0 1px 0 rgba(255,212,194,.1);
+      opacity: 0;
+      animation: fadeUp 1.3s cubic-bezier(.22,1,.36,1) .65s forwards;
+      margin-bottom: 40px;
+    }
+
+    .card p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.6vw, 1.28rem);
+      line-height: 1.9;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+    .card p:last-of-type { margin-bottom: 0; }
+
+    em { font-style: italic; color: var(--accent); }
+    .s { color: var(--sub); }
+
+    .ornament {
+      text-align: center;
+      color: rgba(232,160,138,.4);
+      letter-spacing: .55em;
+      margin: 24px 0;
+      font-size: 1rem;
+    }
+
+    /* ── BLOQUE DE LA FOTO: CUADRO DE GALERÍA VERTICAL (NUEVO DISEÑO) ── */
+    .photo-container {
+      text-align: center;
+      margin: 60px auto;
+      width: 100%;
+      /* Ancho máximo basado en los 540px reales de la foto, 
+         pero responsivo para móvil */
+      max-width: 440px; 
+      opacity: 0;
+      animation: fadeUp 1.3s cubic-bezier(.22,1,.36,1) 1s forwards;
+      position: relative;
+    }
+
+    /* Resplandor cósmico amplio detrás del cuadro */
+    .photo-container::after {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      background: var(--glow);
+      filter: blur(50px);
+      opacity: 0.25;
+      z-index: -1;
+    }
+
+    /* El marco estilo galería con Passepartout */
+    .gallery-frame {
+      width: 100%;
+      /* PROPORCIÓN EXACTA VERTICAL (540 / 960 = 9/16) */
+      aspect-ratio: 9 / 16; 
+      
+      background: rgba(15,10,30,.8); /* var(--bg) con alfa */
+      
+      /* Borde grueso exterior (Passepartout color crema/oro rosa suave) */
+      border: 18px solid rgba(255,212,194,.15); /* var(--accent) con alfa */
+      border-radius: 8px; /* Esquinas ligeramente suavizadas */
+      
+      /* Sombras para dar volumen (Efecto biselado y profundidad) */
+      box-shadow: 
+        0 8px 30px rgba(0,0,0,.5), /* Sombra exterior caída */
+        inset 0 0 1px 1px rgba(255,212,194,.2), /* Borde interno sutil */
+        inset 0 0 15px rgba(0,0,0,.3); /* Sombra interna para efecto passepartout */
+      
+      overflow: hidden; /* Corta la imagen si sobresale del passepartout */
+      position: relative;
+      
+      transition: transform 0.6s cubic-bezier(.22,1,.36,1), box-shadow 0.6s ease;
+    }
+
+    .photo-container:hover .gallery-frame {
+      transform: scale(1.03) translateY(-8px);
+      box-shadow: 
+        0 15px 45px rgba(0,0,0,.6),
+        inset 0 0 1px 1px rgba(255,212,194,.3),
+        inset 0 0 20px rgba(0,0,0,.4);
+    }
+
+    /* La imagen real foto2.jpg ocupando todo el marco */
+    .gallery-frame img {
+      width: 100%;
+      height: 100%;
+      /* object-fit: contain asegura que se vea ENTERA sin recortar, 
+         dejando el borde passepartout libre. 
+         object-fit: cover llenaría todo el marco recortando.
+         Usamos contain para máxima visibilidad. */
+      object-fit: cover; 
+      position: absolute;
+      inset: 0;
+      
+      /* Un ligero filtro para integrarla con la estética cósmica oscurecida */
+      filter: sepia(10%) contrast(105%) brightness(95%);
+      transition: filter 0.5s ease;
+    }
+    
+    .photo-container:hover .gallery-frame img {
+        filter: sepia(0%) contrast(100%) brightness(100%);
+    }
+    
+    /* ── FIN BLOQUE FOTO GALERÍA ── */
+
+    .sign {
+      text-align: right;
+      margin-top: 10px;
+      opacity: 0;
+      animation: fadeUp 1.3s cubic-bezier(.22,1,.36,1) 1.3s forwards;
+    }
+    .sign .name {
+      font-family: 'Sacramento', cursive;
+      font-size: 2.4rem;
+      color: var(--accent);
+      text-shadow: 0 0 22px rgba(232,160,138,.5);
+    }
+    .sign .sub {
+      font-size: .67rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-top: 5px;
+    }
+
+    /* ── BOTÓN DE AUDIO MANTENIDO ── */
+    #unmute-btn {
+      position: fixed;
+      bottom: 26px; right: 26px;
+      z-index: 1000;
+      background: rgba(15,10,30,.9); 
+      border: 1px solid rgba(255,212,194,.4); 
+      border-radius: 50px;
+      padding: 12px 22px;
+      display: flex; align-items: center; gap: 10px;
+      color: var(--accent);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(0,0,0,.5);
+      transition: all .3s ease;
+    }
+    #unmute-btn.pulse { animation: pulse-ring-warm 2s infinite; }
+    #unmute-btn.hidden { opacity: 0; pointer-events: none; transform: translateY(20px); }
+
+    @keyframes pulse-ring-warm {
+      0% { box-shadow: 0 0 0 0 rgba(232,160,138,0.6); }
+      70% { box-shadow: 0 0 0 12px rgba(232,160,138,0); }
+      100% { box-shadow: 0 0 0 0 rgba(232,160,138,0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(26px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 580px) {
+      .card { padding: 32px 22px; }
+      /* Ajuste móvil para que el cuadro vertical no se corte */
+      .photo-container { 
+        max-width: 85%; /* Ocupa casi todo el ancho disponible */
+        margin: 40px auto;
+      }
+      .gallery-frame {
+          border-width: 12px; /* Borde más fino en móvil */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="stars"></div>
+  <canvas id="c"></canvas>
+  <div class="hearts" id="hearts"></div>
+
+  <audio id="local-audio" loop preload="auto">
+    <source src="muci.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="unmute-btn" class="pulse">
+    <span id="vol-icon">▶</span>
+    <span id="vol-label">Escuchar música</span>
+  </button>
+
+  <main>
+    <header>
+      <p class="eyebrow">Para ti y solo para ti, Keyri</p>
+      <h1>Mi cielo hermoso</h1>
+      <div class="line"><span>✦</span></div>
+    </header>
+
+    <article class="card">
+      <p>
+        <em>Mi niña</em>, no sé cuánto tiempo ha pasado, pero te pienso igual. 
+        <span class="s">Te he extrañado más de lo que te imaginas</span> — de esas 
+        extrañanzas que no gritan pero tampoco se van.
+      </p>
+
+      <div class="ornament">· ✦ ·</div>
+
+      <p>
+        Eres de las personas que te dejan huella sin proponérselo. 
+        <em>Tu risa, tu forma de ser</em>, esa luz que traes contigo… 
+        no se olvida, y yo no quiero olvidarla.
+      </p>
+
+      <div class="ornament">· ✦ ·</div>
+
+      <p>
+        <span class="s">Necesito hablarte.</span> Tengo cosas guardadas que solo tienen sentido 
+        contándotelas a ti. <em>Eres la mejor</em>, y eso no cambia con el tiempo ni con la distancia.
+      </p>
+
+      <div class="ornament">· ✦ ·</div>
+
+      <p>
+        Espero que estés bien — de verdad bien. Que descanses, que te cuiden, 
+        que tengas personas que te valoren como mereces. 
+        <em>Mereces todo lo bonito, mi amor.</em>
+      </p>
+
+      <div class="ornament">· ✦ ·</div>
+
+      <p>
+        <span class="s">Cuídate mucho.</span> Aquí siempre vas a tener a alguien que te recuerda, 
+        que te quiere, y que sonríe cada vez que piensa en ti. 
+        <em>Eso no se negocia.</em>
+      </p>
+    </article>
+
+    <div class="photo-container">
+      <div class="gallery-frame">
+        <img src="foto2.jpg" alt="Foto para Keyri">
+      </div>
+    </div>
+    <footer class="sign">
+      <p class="name">Con todo mi amor ♡</p>
+      <p class="sub">siempre, para siempre para Keyri</p>
+    </footer>
+  </main>
+
+  <script>
+    /* ── PARTÍCULAS CANVAS (MANTENIDAS) ── */
+    const cv  = document.getElementById('c');
+    const ctx = cv.getContext('2d');
+    let W, H, pts = [];
+    const cols = ['#e8a08a','#ffd4c2','#a65c71','#f8d8a0','#c07b7b']; 
+
+    function resize() {
+      W = cv.width = innerWidth;
+      H = cv.height = innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 50; i++) pts.push({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.4+.3,
+      vx:(Math.random()-.5)*.2, vy:(Math.random()-.5)*.2,
+      c: cols[Math.random()*cols.length|0],
+      a: Math.random()*.4+.08
+    });
+
+    (function draw() {
+      ctx.clearRect(0,0,W,H);
+      pts.forEach(p => {
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.c; ctx.globalAlpha=p.a; ctx.fill();
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+        if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      });
+      requestAnimationFrame(draw);
+    })();
+
+    /* ── CORAZONES FLOTANTES (MANTENIDOS) ── */
+    const hc  = document.getElementById('hearts');
+    const hch = ['♡','♥','✦','✿','❀'];
+    const hCols = ['#e8a08a','#ffd4c2','#fff0ea','#c07b7b'];
+
+    function spawnHeart() {
+      const el = document.createElement('span');
+      el.className = 'heart';
+      el.textContent = hch[Math.random()*hch.length|0];
+      el.style.cssText = `left:${Math.random()*100}vw;font-size:${Math.random()*.85+.5}rem;color:${hCols[Math.random()*hCols.length|0]}`;
+      const d = Math.random()*12+11;
+      el.style.animationDuration = d+'s';
+      hc.appendChild(el);
+      setTimeout(()=>el.remove(),(d+5)*1000);
+    }
+    setInterval(spawnHeart, 3600);
+
+    /* ── LÓGICA DE AUDIO MANTENIDA ── */
+    const btn = document.getElementById('unmute-btn');
+    const audio = document.getElementById('local-audio');
+    const label = document.getElementById('vol-label');
+    let isPlaying = false;
+
+    btn.addEventListener('click', function() {
+      if (!isPlaying) {
+        audio.play().then(() => {
+          isPlaying = true;
+          label.innerText = "Sonando...";
+          btn.classList.remove('pulse');
+          setTimeout(() => { btn.classList.add('hidden'); }, 2600);
+        }).catch(err => {
+          console.error("Audio block:", err);
+          label.innerText = "Error - Reintentar";
+        });
+      }
+    });
+  </script>
+</body>
+</html>
